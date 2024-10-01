@@ -13,23 +13,47 @@ export class InputModal extends Modal {
 
     onOpen() {
         const { contentEl } = this;
-
-        contentEl.createEl('h2', { text: '请输入内容' });
-
+    
+        // container
+        contentEl.style.display = 'flex';
+        contentEl.style.flexDirection = 'column';
+        contentEl.style.alignItems = 'center';
+        contentEl.style.justifyContent = 'center';
+        contentEl.style.height = '120%';
+    
+        // title
+        const titleEl = contentEl.createEl('h2', { text: 'I am wondering..' });
+        titleEl.style.marginBottom = '20px';
+    
+        // input
         const inputEl = contentEl.createEl('input', {
             type: 'text',
-            placeholder: '在此输入...',
+            placeholder: 'about..',
         });
-
+        inputEl.style.width = '300px';
+        inputEl.style.padding = '10px';
+        inputEl.style.marginBottom = '20px';
+        inputEl.style.border = '1px solid #ccc';
+        inputEl.style.borderRadius = '5px';
+    
         inputEl.oninput = (e: Event) => {
             const target = e.target as HTMLInputElement;
             this.inputValue = target.value;
         };
-
-        contentEl.createEl('button', { text: '提交' }).addEventListener('click', () => {
-            new Notice(`你输入了: ${this.inputValue}`);
+    
+        // button
+        const buttonEl = contentEl.createEl('button', { text: 'TRY !!' });
+        buttonEl.style.padding = '10px 20px';
+        buttonEl.style.border = 'none';
+        buttonEl.style.backgroundColor = 'var(--color-accent)';
+        buttonEl.style.color = 'white';
+        buttonEl.style.borderRadius = '5px';
+        buttonEl.style.cursor = 'pointer';
+    
+        buttonEl.addEventListener('click', () => {
+            new Notice(`Retrieving..: ${this.inputValue}`);
             this.resolve(this.inputValue);
-            this.close();  
+            this.close();
         });
     }
 
