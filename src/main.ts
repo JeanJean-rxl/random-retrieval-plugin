@@ -100,8 +100,11 @@ export default class RandomRetrievalPlugin extends Plugin {
             const response = await axios.get(`http://127.0.0.1:8000/search?query=${encodeURIComponent(query)}`);
          
             if (response.status === 200) {
-                const firstFilePath = response.data[0];
-                let relativePath = firstFilePath.replace(absPath, "");    
+                // const firstFilePath = response.data[0];
+                // let relativePath = firstFilePath.replace(absPath, "");    
+                // name_1 = relativePath.replace(".md", "");
+                const firstFilePath = response.data.ranker.documents[0].meta.name;
+                let relativePath = firstFilePath.replace(absPath, "");
                 name_1 = relativePath.replace(".md", "");
             } else {
                 new Notice(`Failed: ${response.status}`);

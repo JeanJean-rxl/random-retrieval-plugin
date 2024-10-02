@@ -95,6 +95,7 @@ def main(query):
     documents = load_documents_from_folder(vault_path)
     pipeline = setup_pipeline(documents)
     result = run_query(pipeline, query)
+    # result = pretty_results(result, vault_path)
 
     return result
 
