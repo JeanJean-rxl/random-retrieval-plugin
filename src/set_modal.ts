@@ -42,7 +42,7 @@ export class InputModal extends Modal {
         };
     
         // button
-        const buttonEl = contentEl.createEl('button', { text: 'TRY !!' });
+        const buttonEl = contentEl.createEl('button', { text: 'NightWalk 💡' });
         buttonEl.style.padding = '10px 20px';
         buttonEl.style.border = 'none';
         buttonEl.style.backgroundColor = 'var(--color-accent)';
