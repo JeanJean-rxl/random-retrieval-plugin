@@ -49,11 +49,18 @@ export class InputModal extends Modal {
         buttonEl.style.color = 'white';
         buttonEl.style.borderRadius = '5px';
         buttonEl.style.cursor = 'pointer';
+        buttonEl.tabIndex = 0;
     
         buttonEl.addEventListener('click', () => {
             new Notice(`Retrieving..: ${this.inputValue}`);
             this.resolve(this.inputValue);
             this.close();
+        });
+
+        inputEl.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (event.key === 'Enter') {
+                buttonEl.click();
+            }
         });
     }
 

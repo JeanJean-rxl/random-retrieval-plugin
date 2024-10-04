@@ -14,5 +14,6 @@ export interface RandomRetrievalSettings {
     openInNewLeaf: boolean;
     enableRibbonIcon: boolean;
     setModel: string;
+    setNoteNum: string;
     vaultPath: string;
 }

@@ -1,5 +1,5 @@
 import RandomRetrievalPlugin from './main';
-import { PluginSettingTab, Setting } from 'obsidian';
+import { PluginSettingTab, Setting, Notice } from 'obsidian';
 
 export class RandomRetrievalSettingTab extends PluginSettingTab {
     plugin: RandomRetrievalPlugin;
@@ -25,6 +25,19 @@ export class RandomRetrievalSettingTab extends PluginSettingTab {
 			.setValue(this.plugin.settings.setModel)
 			.onChange(async (value) => {
 				this.plugin.settings.setModel = value;
+				await this.plugin.saveSettings();
+			})
+		);
+
+        new Setting(containerEl)
+		.setName("Open How Many Notes")
+		.setDesc("Default number of notes to open")
+		.addText((text) =>
+			text
+			.setPlaceholder("3")
+			.setValue(this.plugin.settings.setNoteNum.toString())
+			.onChange(async (value) => {
+                this.plugin.settings.setNoteNum = value;
 				await this.plugin.saveSettings();
 			})
 		);

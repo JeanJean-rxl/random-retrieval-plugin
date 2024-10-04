@@ -102,6 +102,6 @@ def main(query):
 
 @app.get("/search")
 def search(query: str):
-    names = main(query)
-    return names
+    result = main(query)
+    return result
 
