@@ -16,13 +16,19 @@ I choose LLM to be a retriver + ranker, so that this plugin can function like a 
 ## Installation
 
 - at the first time 
+
 conda create --name rr-env
+
 pip install -r requirements.txt
 
 - and then
+
 open plugin in obsidian (a terminal will be activated automatically) 
+
 click ribbon button, and enjoy the nightwalk💡
+
 (please keep the terminal open while you run the plugin)
+
 
 
 ## Future Plan
