@@ -1,7 +1,7 @@
 {
 	"id": "random-retrieval-plugin",
 	"name": "random-retrieval-plugin",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "0.0.1",
 	"description": "random-retrieval based on LLMs",
 	"author": "Rachninomav",
