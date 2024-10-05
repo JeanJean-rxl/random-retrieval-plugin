@@ -43,6 +43,19 @@ export class RandomRetrievalSettingTab extends PluginSettingTab {
 		);
 
         new Setting(containerEl)
+		.setName("Conda Environment Name")
+		.setDesc("Default conda environment")
+		.addText((text) =>
+			text
+			.setPlaceholder("rr-env")
+			.setValue(this.plugin.settings.setCondaEnv)
+			.onChange(async (value) => {
+				this.plugin.settings.setCondaEnv = value;
+				await this.plugin.saveSettings();
+			})
+		);
+
+        new Setting(containerEl)
             .setName('Open in New Leaf')
             .setDesc('Default setting for opening random notes')
             .addToggle((toggle) => {

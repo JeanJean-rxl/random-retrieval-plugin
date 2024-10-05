@@ -1,4 +1,3 @@
-from datetime import datetime
 import os
 import json
 
@@ -12,9 +11,9 @@ from haystack.components.retrievers.in_memory import InMemoryBM25Retriever, InMe
 from haystack.components.rankers import TransformersSimilarityRanker
 from haystack.components.joiners import DocumentJoiner
 
-app = FastAPI()
+rr_app = FastAPI()
 
-app.add_middleware(
+rr_app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
@@ -100,7 +99,7 @@ def main(query):
     return result
 
 
-@app.get("/search")
+@rr_app.get("/search")
 def search(query: str):
     result = main(query)
     return result

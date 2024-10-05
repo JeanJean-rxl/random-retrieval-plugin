@@ -15,5 +15,6 @@ export interface RandomRetrievalSettings {
     enableRibbonIcon: boolean;
     setModel: string;
     setNoteNum: string;
+    setCondaEnv: string;
     vaultPath: string;
 }

@@ -16,9 +16,13 @@ import { RandomRetrievalSettingTab } from './settingTab';
 import { RandomRetrievalSettings } from './types';
 import { InputModal } from './set_modal';
 import * as fs from 'fs';
+import { exec } from 'child_process';
+
 
 //@ts-ignore
 const absPath = app.vault.adapter.basePath;
+const PATH_TO_JSON = `${absPath}/.obsidian/plugins/random-retrieval-plugin/data.json`;
+const PATH_TO_APP = `${absPath}/.obsidian/plugins/random-retrieval-plugin/`;
 
 
 export default class RandomRetrievalPlugin extends Plugin {
@@ -28,14 +32,15 @@ export default class RandomRetrievalPlugin extends Plugin {
         enableRibbonIcon: true, 
         setNoteNum: '3',
         setModel: 'default', 
-        vaultPath: absPath 
+        vaultPath: absPath,
+        setCondaEnv: 'rr-env'
     };
 
 
 	async onload() {
 		await this.loadSettings();
 		this.addSettingTab(new RandomRetrievalSettingTab(this));
-        // this.refreshRibbonIcon();
+        this.runUvicorn();
 	}
 
     
@@ -50,6 +55,7 @@ export default class RandomRetrievalPlugin extends Plugin {
             this.setEnableRibbonIcon(loadedSettings.enableRibbonIcon);
             this.setModel(loadedSettings.setModel);
             this.setNoteNum(loadedSettings.setNoteNum);
+            this.setCondaEnv(loadedSettings.setCondaEnv);
         } else {
             this.refreshRibbonIcon();
         }
@@ -58,8 +64,6 @@ export default class RandomRetrievalPlugin extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
         const jsonString = JSON.stringify(this.settings, null, 2);
-        const PATH_TO_JSON = `${absPath}/.obsidian/plugins/random-retrieval-plugin/data.json`;
-        // new Notice(`Saving settings to ${PATH_TO_JSON}`);
         await fs.promises.writeFile(PATH_TO_JSON, jsonString, 'utf8');
 	}
 
@@ -75,6 +79,11 @@ export default class RandomRetrievalPlugin extends Plugin {
 
     setNoteNum = (value: string): void => {
         this.settings.setNoteNum = value;
+        this.saveData(this.settings);
+    };
+
+    setCondaEnv = (value: string): void => {
+        this.settings.setCondaEnv = value;
         this.saveData(this.settings);
     };
 
@@ -146,6 +155,30 @@ export default class RandomRetrievalPlugin extends Plugin {
         }
     
     };
+
+    
+    runUvicorn() {
+
+        const command = `osascript -e 'tell application "Terminal"
+        activate
+        do script "cd ${PATH_TO_APP} && conda activate ${this.settings.setCondaEnv} && uvicorn rr_app:rr_app --reload"
+    end tell'`;
+
+        exec(command, (error, stdout, stderr) => {
+            if (error) {
+                new Notice(`Error: ${error.message}`);
+                return;
+            }
+
+            if (stderr) {
+                new Notice(`stderr: ${stderr}`);
+                return;
+            }
+
+            new Notice(`stdout: ${stdout}`);
+        });
+
+    }
     
 }
 

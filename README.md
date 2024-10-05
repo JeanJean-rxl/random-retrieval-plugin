@@ -12,19 +12,30 @@ I developped this plugin because .. I have a bad memory... and I enjoy the pleas
 
 I choose LLM to be a retriver + ranker, so that this plugin can function like a fuzzy-search / half-random-note.
 
+
 ## Installation
-- dependency: pip install hayhooks
-- cd to plugin dir and run this:  uvicorn app:app --reload
-- open plugin in obsidian, click ribbon button, and enjoy
+
+- at the first time 
+conda create --name rr-env
+pip install -r requirements.txt
+
+- and then
+open plugin in obsidian (a terminal will be activated automatically) 
+click ribbon button, and enjoy the nightwalk💡
+(please keep the terminal open while you run the plugin)
 
 
 ## Future Plan
 - multi-language support
-- 1 search, N open
 - speed up
 
 
 ## Version History
+#### 1.0.1
+- once conda env is set, open terminal automatically while activate the plugin
+- manually set the num of new pages (default open 3 new pages, ranking by retriever)
+
+
 #### 1.0.0
 - basic version: only support English for now.
 
