@@ -1,8 +1,29 @@
-/*
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.random-retrieval.modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+}
 
-If your plugin does not need CSS, delete this file.
+.random-retrieval.modal-title {
+    margin-bottom: 20px;
+}
 
-*/
+.random-retrieval.modal-input {
+    width: 300px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.random-retrieval.button-nightwalk {
+    padding: 10px 20px;
+    border: none;
+    background-color: var(--color-accent);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}

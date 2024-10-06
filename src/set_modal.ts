@@ -1,5 +1,5 @@
 import { App, Plugin, Modal, Notice, Setting } from 'obsidian';
-
+import '../styles.css';
 
 export class InputModal extends Modal {
 
@@ -13,28 +13,21 @@ export class InputModal extends Modal {
 
     onOpen() {
         const { contentEl } = this;
+        // contentEl.classList.add('random-retrieval');
     
         // container
-        contentEl.style.display = 'flex';
-        contentEl.style.flexDirection = 'column';
-        contentEl.style.alignItems = 'center';
-        contentEl.style.justifyContent = 'center';
-        contentEl.style.height = '120%';
+        contentEl.classList.add('random-retrieval', 'modal-content');
     
         // title
         const titleEl = contentEl.createEl('h2', { text: 'I am wondering..' });
-        titleEl.style.marginBottom = '20px';
+        titleEl.classList.add('random-retrieval', 'modal-title');
     
         // input
         const inputEl = contentEl.createEl('input', {
             type: 'text',
             placeholder: 'about..',
         });
-        inputEl.style.width = '300px';
-        inputEl.style.padding = '10px';
-        inputEl.style.marginBottom = '20px';
-        inputEl.style.border = '1px solid #ccc';
-        inputEl.style.borderRadius = '5px';
+        inputEl.classList.add('random-retrieval', 'modal-input');
     
         inputEl.oninput = (e: Event) => {
             const target = e.target as HTMLInputElement;
@@ -43,13 +36,7 @@ export class InputModal extends Modal {
     
         // button
         const buttonEl = contentEl.createEl('button', { text: 'NightWalk 💡' });
-        buttonEl.style.padding = '10px 20px';
-        buttonEl.style.border = 'none';
-        buttonEl.style.backgroundColor = 'var(--color-accent)';
-        buttonEl.style.color = 'white';
-        buttonEl.style.borderRadius = '5px';
-        buttonEl.style.cursor = 'pointer';
-        buttonEl.tabIndex = 0;
+        buttonEl.classList.add('random-retrieval', 'button-nightwalk');
     
         buttonEl.addEventListener('click', () => {
             new Notice(`Retrieving..: ${this.inputValue}`);

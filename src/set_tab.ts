@@ -1,5 +1,5 @@
 import RandomRetrievalPlugin from './main';
-import { PluginSettingTab, Setting, Notice } from 'obsidian';
+import { PluginSettingTab, Setting } from 'obsidian';
 
 export class RandomRetrievalSettingTab extends PluginSettingTab {
     plugin: RandomRetrievalPlugin;
@@ -16,18 +16,18 @@ export class RandomRetrievalSettingTab extends PluginSettingTab {
 
         containerEl.createEl('h2', { text: 'Random Retrieval Settings' });
 
-        new Setting(containerEl)
-		.setName("LLM Model Name")
-		.setDesc("Default model")
-		.addText((text) =>
-			text
-			.setPlaceholder("default")
-			.setValue(this.plugin.settings.setModel)
-			.onChange(async (value) => {
-				this.plugin.settings.setModel = value;
-				await this.plugin.saveSettings();
-			})
-		);
+        // new Setting(containerEl)
+		// .setName("LLM Model Name")
+		// .setDesc("Default model")
+		// .addText((text) =>
+		// 	text
+		// 	.setPlaceholder("default")
+		// 	.setValue(this.plugin.settings.setModel)
+		// 	.onChange(async (value) => {
+		// 		this.plugin.settings.setModel = value;
+		// 		await this.plugin.saveSettings();
+		// 	})
+		// );
 
         new Setting(containerEl)
 		.setName("Open How Many Notes")
@@ -51,6 +51,32 @@ export class RandomRetrievalSettingTab extends PluginSettingTab {
 			.setValue(this.plugin.settings.setCondaEnv)
 			.onChange(async (value) => {
 				this.plugin.settings.setCondaEnv = value;
+				await this.plugin.saveSettings();
+			})
+		);
+
+		new Setting(containerEl)
+		.setName("Path to Plugin Configuration")
+		.setDesc("Default")
+		.addText((text) =>
+			text
+			.setPlaceholder("default")
+			.setValue(this.plugin.settings.PATH_TO_JSON)
+			.onChange(async (value) => {
+				this.plugin.settings.PATH_TO_JSON = value;
+				await this.plugin.saveSettings();
+			})
+		);
+
+		new Setting(containerEl)
+		.setName("Path to Plugin Application")
+		.setDesc("Default")
+		.addText((text) =>
+			text
+			.setPlaceholder("default")
+			.setValue(this.plugin.settings.PATH_TO_APP)
+			.onChange(async (value) => {
+				this.plugin.settings.PATH_TO_APP = value;
 				await this.plugin.saveSettings();
 			})
 		);

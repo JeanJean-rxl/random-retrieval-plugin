@@ -37,7 +37,12 @@ click ribbon button, and enjoy the nightwalk💡
 
 
 ## Version History
-#### 1.0.1
+
+#### 1.0.4
+- update styles.css
+- allow user to configure the configuration directory
+
+#### 1.0.3
 - once conda env is set, open terminal automatically while activate the plugin
 - manually set the num of new pages (default open 3 new pages, ranking by retriever)
 

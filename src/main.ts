@@ -12,17 +12,16 @@ import {
 	TFile 
 }from 'obsidian';
 
-import { RandomRetrievalSettingTab } from './settingTab';
+import { RandomRetrievalSettingTab } from './set_tab';
 import { RandomRetrievalSettings } from './types';
 import { InputModal } from './set_modal';
 import * as fs from 'fs';
-import { exec } from 'child_process';
+import { exec, ChildProcess } from 'child_process';
+import '../styles.css';
 
 
 //@ts-ignore
 const absPath = app.vault.adapter.basePath;
-const PATH_TO_JSON = `${absPath}/.obsidian/plugins/random-retrieval-plugin/data.json`;
-const PATH_TO_APP = `${absPath}/.obsidian/plugins/random-retrieval-plugin/`;
 
 
 export default class RandomRetrievalPlugin extends Plugin {
@@ -31,10 +30,13 @@ export default class RandomRetrievalPlugin extends Plugin {
     settings: RandomRetrievalSettings = { openInNewLeaf: true, 
         enableRibbonIcon: true, 
         setNoteNum: '3',
-        setModel: 'default', 
+        // setModel: 'default', 
         vaultPath: absPath,
-        setCondaEnv: 'rr-env'
+        setCondaEnv: 'rr-env',
+        PATH_TO_JSON: `${absPath}/.obsidian/plugins/random-retrieval-plugin/data.json`,
+        PATH_TO_APP: `${absPath}/.obsidian/plugins/random-retrieval-plugin/`
     };
+    private uvicornProcess: ChildProcess | null = null;
 
 
 	async onload() {
@@ -42,7 +44,6 @@ export default class RandomRetrievalPlugin extends Plugin {
 		this.addSettingTab(new RandomRetrievalSettingTab(this));
         this.runUvicorn();
 	}
-
     
 	async onunload() {
 	}
@@ -53,9 +54,11 @@ export default class RandomRetrievalPlugin extends Plugin {
         if (loadedSettings) {
             this.setOpenInNewLeaf(loadedSettings.openInNewLeaf);
             this.setEnableRibbonIcon(loadedSettings.enableRibbonIcon);
-            this.setModel(loadedSettings.setModel);
+            // this.setModel(loadedSettings.setModel);
             this.setNoteNum(loadedSettings.setNoteNum);
             this.setCondaEnv(loadedSettings.setCondaEnv);
+            this.PATH_TO_JSON(loadedSettings.PATH_TO_JSON);
+            this.PATH_TO_APP(loadedSettings.PATH_TO_APP);
         } else {
             this.refreshRibbonIcon();
         }
@@ -64,7 +67,7 @@ export default class RandomRetrievalPlugin extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
         const jsonString = JSON.stringify(this.settings, null, 2);
-        await fs.promises.writeFile(PATH_TO_JSON, jsonString, 'utf8');
+        await fs.promises.writeFile(this.settings.PATH_TO_JSON, jsonString, 'utf8');
 	}
 
 	setOpenInNewLeaf = (value: boolean): void => {
@@ -72,10 +75,10 @@ export default class RandomRetrievalPlugin extends Plugin {
         this.saveData(this.settings);
     };
 
-    setModel = (value: string): void => {
-        this.settings.setModel = value;
-        this.saveData(this.settings);
-    };
+    // setModel = (value: string): void => {
+    //     this.settings.setModel = value;
+    //     this.saveData(this.settings);
+    // };
 
     setNoteNum = (value: string): void => {
         this.settings.setNoteNum = value;
@@ -84,6 +87,16 @@ export default class RandomRetrievalPlugin extends Plugin {
 
     setCondaEnv = (value: string): void => {
         this.settings.setCondaEnv = value;
+        this.saveData(this.settings);
+    };
+
+    PATH_TO_JSON = (value: string): void => {
+        this.settings.PATH_TO_JSON = value;
+        this.saveData(this.settings);
+    };
+
+    PATH_TO_APP = (value: string): void => {
+        this.settings.PATH_TO_APP = value;
         this.saveData(this.settings);
     };
 
@@ -102,7 +115,7 @@ export default class RandomRetrievalPlugin extends Plugin {
                 () => {
                     const inputModal = new InputModal(this.app);
                     inputModal.openAndGetValue().then((inputValue) => {
-                        this.handleOpenRandomNoteFromSearch_test(inputValue);
+                        this.handleOpenRandomNote(inputValue);
                     });
                 }
             );
@@ -110,7 +123,7 @@ export default class RandomRetrievalPlugin extends Plugin {
     };
 
 
-    handleOpenRandomNoteFromSearch_test = async (query: string): Promise<void> => {
+    handleOpenRandomNote = async (query: string): Promise<void> => {
 
         const axios = require('axios');
         let fileNames: any;
@@ -157,14 +170,13 @@ export default class RandomRetrievalPlugin extends Plugin {
     };
 
     
-    runUvicorn() {
-
+    async runUvicorn() {
         const command = `osascript -e 'tell application "Terminal"
         activate
-        do script "cd ${PATH_TO_APP} && conda activate ${this.settings.setCondaEnv} && uvicorn rr_app:rr_app --reload"
-    end tell'`;
+        do script "cd ${this.settings.PATH_TO_APP} && conda activate ${this.settings.setCondaEnv} && uvicorn rr_app:rr_app --reload"
+        end tell'`;
 
-        exec(command, (error, stdout, stderr) => {
+        this.uvicornProcess = exec(command, (error, stdout, stderr) => {
             if (error) {
                 new Notice(`Error: ${error.message}`);
                 return;

@@ -13,8 +13,10 @@ export interface SearchView extends View {
 export interface RandomRetrievalSettings {
     openInNewLeaf: boolean;
     enableRibbonIcon: boolean;
-    setModel: string;
+    // setModel: string;
     setNoteNum: string;
     setCondaEnv: string;
     vaultPath: string;
+    PATH_TO_JSON: string;
+    PATH_TO_APP: string;
 }
