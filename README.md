@@ -21,13 +21,17 @@ conda create --name rr-env
 
 pip install -r requirements.txt
 
-- and then
+- and then (for the most users)
 
 open plugin in obsidian (a terminal will be activated automatically) 
 
 click ribbon button, and enjoy the nightwalk💡
 
 (please keep the terminal open while you run the plugin)
+
+- and then (for the developpers)
+
+feel free to replace rr_app.py with your models 
 
 
 
@@ -38,9 +42,14 @@ click ribbon button, and enjoy the nightwalk💡
 
 ## Version History
 
+#### 1.0.5
+- support embedding/retrieval model language: en/zh
+
+
 #### 1.0.4
 - update styles.css
 - allow user to configure the configuration directory
+
 
 #### 1.0.3
 - once conda env is set, open terminal automatically while activate the plugin

@@ -16,18 +16,18 @@ export class RandomRetrievalSettingTab extends PluginSettingTab {
 
         containerEl.createEl('h2', { text: 'Random Retrieval Settings' });
 
-        // new Setting(containerEl)
-		// .setName("LLM Model Name")
-		// .setDesc("Default model")
-		// .addText((text) =>
-		// 	text
-		// 	.setPlaceholder("default")
-		// 	.setValue(this.plugin.settings.setModel)
-		// 	.onChange(async (value) => {
-		// 		this.plugin.settings.setModel = value;
-		// 		await this.plugin.saveSettings();
-		// 	})
-		// );
+        new Setting(containerEl)
+		.setName("LLM Retriever Language")
+		.setDesc("zh for Chinese, en for English")
+		.addText((text) =>
+			text
+			.setPlaceholder("zh")
+			.setValue(this.plugin.settings.setLanguage)
+			.onChange(async (value) => {
+				this.plugin.settings.setLanguage = value;
+				await this.plugin.saveSettings();
+			})
+		);
 
         new Setting(containerEl)
 		.setName("Open How Many Notes")

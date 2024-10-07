@@ -38,15 +38,21 @@ def load_documents_from_folder(folder_path):
     return documents
 
 
-def setup_pipeline(documents):
-    doc_embedder = SentenceTransformersDocumentEmbedder(model="BAAI/bge-small-en-v1.5")
+def setup_pipeline(documents, model_lang):
+    if model_lang == "en":
+        doc_embedder = SentenceTransformersDocumentEmbedder(model="BAAI/bge-small-en-v1.5")
+        text_embedder = SentenceTransformersTextEmbedder(model="BAAI/bge-small-en-v1.5")
+    elif model_lang == "zh":
+        doc_embedder = SentenceTransformersDocumentEmbedder(model="BAAI/bge-small-zh-v1.5")
+        text_embedder = SentenceTransformersTextEmbedder(model="BAAI/bge-small-zh-v1.5")
+    else:
+        raise ValueError("Model language not supported")
+    
     doc_embedder.warm_up()
     docs_with_embeddings = doc_embedder.run(documents)["documents"]
-
     document_store = InMemoryDocumentStore()
     document_store.write_documents(docs_with_embeddings)
     
-    text_embedder = SentenceTransformersTextEmbedder(model="BAAI/bge-small-en-v1.5")
     embedding_retriever = InMemoryEmbeddingRetriever(document_store)
     bm25_retriever = InMemoryBM25Retriever(document_store)
     
@@ -89,10 +95,10 @@ def main(query):
         data = json.load(file)
 
     vault_path = data["vaultPath"]
-    # model_name = data["setModel"]
+    model_lang = data["setLanguage"]
 
     documents = load_documents_from_folder(vault_path)
-    pipeline = setup_pipeline(documents)
+    pipeline = setup_pipeline(documents, model_lang)
     result = run_query(pipeline, query)
     # result = pretty_results(result, vault_path)
 
@@ -103,4 +109,3 @@ def main(query):
 def search(query: str):
     result = main(query)
     return result
-

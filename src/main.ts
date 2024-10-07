@@ -30,7 +30,7 @@ export default class RandomRetrievalPlugin extends Plugin {
     settings: RandomRetrievalSettings = { openInNewLeaf: true, 
         enableRibbonIcon: true, 
         setNoteNum: '3',
-        // setModel: 'default', 
+        setLanguage: 'zh', 
         vaultPath: absPath,
         setCondaEnv: 'rr-env',
         PATH_TO_JSON: `${absPath}/.obsidian/plugins/random-retrieval-plugin/data.json`,
@@ -54,7 +54,7 @@ export default class RandomRetrievalPlugin extends Plugin {
         if (loadedSettings) {
             this.setOpenInNewLeaf(loadedSettings.openInNewLeaf);
             this.setEnableRibbonIcon(loadedSettings.enableRibbonIcon);
-            // this.setModel(loadedSettings.setModel);
+            this.setLanguage(loadedSettings.setLanguage);
             this.setNoteNum(loadedSettings.setNoteNum);
             this.setCondaEnv(loadedSettings.setCondaEnv);
             this.PATH_TO_JSON(loadedSettings.PATH_TO_JSON);
@@ -75,10 +75,10 @@ export default class RandomRetrievalPlugin extends Plugin {
         this.saveData(this.settings);
     };
 
-    // setModel = (value: string): void => {
-    //     this.settings.setModel = value;
-    //     this.saveData(this.settings);
-    // };
+    setLanguage = (value: string): void => {
+        this.settings.setLanguage = value;
+        this.saveData(this.settings);
+    };
 
     setNoteNum = (value: string): void => {
         this.settings.setNoteNum = value;
