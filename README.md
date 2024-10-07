@@ -42,8 +42,8 @@ feel free to replace rr_app.py with your models
 
 ## Version History
 
-#### 1.0.5
-- support embedding/retrieval model language: en/zh
+#### 1.0.6
+- support language added: Chinese
 
 
 #### 1.0.4
