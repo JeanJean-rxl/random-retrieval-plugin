@@ -1,10 +1,10 @@
 {
 	"id": "random-retrieval",
 	"name": "random-retrieval",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"minAppVersion": "0.0.1",
 	"description": "Random Note Retrieval based on LLMs.",
 	"author": "Rachninomav",
 	"authorUrl": "https://github.com/JeanJean-rxl",
-	"isDesktopOnly": false
+	"isDesktopOnly": true
 }

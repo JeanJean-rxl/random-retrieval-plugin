@@ -14,10 +14,8 @@ export class RandomRetrievalSettingTab extends PluginSettingTab {
 
         containerEl.empty();
 
-        containerEl.createEl('h2', { text: 'Random Retrieval Settings' });
-
         new Setting(containerEl)
-		.setName("LLM Retriever Language")
+		.setName("LLM retriever language")
 		.setDesc("zh for Chinese, en for English")
 		.addText((text) =>
 			text
@@ -30,7 +28,7 @@ export class RandomRetrievalSettingTab extends PluginSettingTab {
 		);
 
         new Setting(containerEl)
-		.setName("Open How Many Notes")
+		.setName("Open how many notes")
 		.setDesc("Default number of notes to open")
 		.addText((text) =>
 			text
@@ -43,7 +41,7 @@ export class RandomRetrievalSettingTab extends PluginSettingTab {
 		);
 
         new Setting(containerEl)
-		.setName("Conda Environment Name")
+		.setName("Conda environment name")
 		.setDesc("Default conda environment")
 		.addText((text) =>
 			text
@@ -56,7 +54,7 @@ export class RandomRetrievalSettingTab extends PluginSettingTab {
 		);
 
 		new Setting(containerEl)
-		.setName("Path to Plugin Configuration")
+		.setName("Path to plugin configuration")
 		.setDesc("Default")
 		.addText((text) =>
 			text
@@ -69,7 +67,7 @@ export class RandomRetrievalSettingTab extends PluginSettingTab {
 		);
 
 		new Setting(containerEl)
-		.setName("Path to Plugin Application")
+		.setName("Path to plugin application")
 		.setDesc("Default")
 		.addText((text) =>
 			text
@@ -82,19 +80,12 @@ export class RandomRetrievalSettingTab extends PluginSettingTab {
 		);
 
         new Setting(containerEl)
-            .setName('Open in New Leaf')
+            .setName('Open in new leaf')
             .setDesc('Default setting for opening random notes')
             .addToggle((toggle) => {
                 toggle.setValue(this.plugin.settings.openInNewLeaf);
                 toggle.onChange(this.plugin.setOpenInNewLeaf);
             });
 
-        new Setting(containerEl)
-            .setName('Enable Ribbon Icon')
-            .setDesc('Place an icon on the ribbon to open a random note from search')
-            .addToggle((toggle) => {
-                toggle.setValue(this.plugin.settings.enableRibbonIcon);
-                toggle.onChange(this.plugin.setEnableRibbonIcon);
-            });
     }
 }

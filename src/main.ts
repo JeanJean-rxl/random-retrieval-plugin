@@ -5,12 +5,17 @@ import {
     Modal, 
     Notice, 
     Plugin, 
+    requestUrl,
+    FileSystemAdapter,
+    PluginManifest,
     PluginSettingTab, 
     Setting, 
     ItemView, 
     WorkspaceLeaf,
 	TFile 
 }from 'obsidian';
+
+import * as os from 'os';
 
 import { RandomRetrievalSettingTab } from './set_tab';
 import { RandomRetrievalSettings } from './types';
@@ -20,27 +25,44 @@ import { exec, ChildProcess } from 'child_process';
 import '../styles.css';
 
 
-//@ts-ignore
-const absPath = app.vault.adapter.basePath;
-
-
 export default class RandomRetrievalPlugin extends Plugin {
 
+    app: App;
+
+    constructor(app: App, manifest: PluginManifest) {
+        super(app, manifest); 
+        this.app = app;
+    }
+
+    getAbsPath(fileName: string): string {
+        let basePath='';
+        let relativePath;
+
+        if (this.app.vault.adapter instanceof FileSystemAdapter) {
+            basePath = this.app.vault.adapter.getBasePath() || '';
+        }
+
+        return basePath;
+    }
+
+
     ribbonIconEl: HTMLElement | undefined = undefined;
+
     settings: RandomRetrievalSettings = { openInNewLeaf: true, 
-        enableRibbonIcon: true, 
         setNoteNum: '3',
         setLanguage: 'zh', 
-        vaultPath: absPath,
+        vaultPath: `${this.getAbsPath('data.json')}`,
         setCondaEnv: 'rr-env',
-        PATH_TO_JSON: `${absPath}/.obsidian/plugins/random-retrieval-plugin/data.json`,
-        PATH_TO_APP: `${absPath}/.obsidian/plugins/random-retrieval-plugin/`
+        PATH_TO_JSON: `${this.getAbsPath('data.json')}/${this.manifest.dir}/data.json`,
+        PATH_TO_APP: `${this.getAbsPath('data.json')}/${this.manifest.dir}/`
+
     };
     private uvicornProcess: ChildProcess | null = null;
 
 
 	async onload() {
 		await this.loadSettings();
+        this.refreshRibbonIcon();
 		this.addSettingTab(new RandomRetrievalSettingTab(this));
         this.runUvicorn();
 	}
@@ -53,7 +75,6 @@ export default class RandomRetrievalPlugin extends Plugin {
         const loadedSettings = (await this.loadData()) as RandomRetrievalSettings;
         if (loadedSettings) {
             this.setOpenInNewLeaf(loadedSettings.openInNewLeaf);
-            this.setEnableRibbonIcon(loadedSettings.enableRibbonIcon);
             this.setLanguage(loadedSettings.setLanguage);
             this.setNoteNum(loadedSettings.setNoteNum);
             this.setCondaEnv(loadedSettings.setCondaEnv);
@@ -67,7 +88,7 @@ export default class RandomRetrievalPlugin extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
         const jsonString = JSON.stringify(this.settings, null, 2);
-        await fs.promises.writeFile(this.settings.PATH_TO_JSON, jsonString, 'utf8');
+        // await fs.promises.writeFile(this.settings.PATH_TO_JSON, jsonString, 'utf8');
 	}
 
 	setOpenInNewLeaf = (value: boolean): void => {
@@ -100,45 +121,41 @@ export default class RandomRetrievalPlugin extends Plugin {
         this.saveData(this.settings);
     };
 
-	setEnableRibbonIcon = (value: boolean): void => {
-        this.settings.enableRibbonIcon = value;
-        this.refreshRibbonIcon();
-        this.saveData(this.settings);
-    };
-
     refreshRibbonIcon = (): void => {
         this.ribbonIconEl?.remove();
-        if (this.settings.enableRibbonIcon) {
-            this.ribbonIconEl = this.addRibbonIcon(
-                'annoyed',
-                'Open Random Note from Search',
-                () => {
-                    const inputModal = new InputModal(this.app);
-                    inputModal.openAndGetValue().then((inputValue) => {
-                        this.handleOpenRandomNote(inputValue);
-                    });
-                }
-            );
-        }
+
+        this.ribbonIconEl = this.addRibbonIcon(
+            'annoyed',
+            'Open Random Note from Search',
+            () => {
+                const inputModal = new InputModal(this.app);
+                inputModal.openAndGetValue().then((inputValue) => {
+                    this.handleOpenRandomNote(inputValue);
+                });
+            }
+        );
+
     };
 
 
     handleOpenRandomNote = async (query: string): Promise<void> => {
 
-        const axios = require('axios');
         let fileNames: any;
     
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/search?query=${encodeURIComponent(query)}`);
+            const response = await requestUrl({
+                url: `http://127.0.0.1:8000/search?query=${encodeURIComponent(query)}`,
+                method: 'GET'
+            });
          
             if (response.status === 200) {
 
                 const noteNum = Number(this.settings.setNoteNum);
-                const validNoteNum = isNaN(noteNum) || noteNum <= 0 ? 1 : Math.min(noteNum, response.data.ranker.documents.length); // 确保 noteNum 是一个有效的正整数，并且不超过文档的长度
+                const validNoteNum = isNaN(noteNum) || noteNum <= 0 ? 1 : Math.min(noteNum, response.json.ranker.documents.length); 
 
-                fileNames = response.data.ranker.documents.slice(0, validNoteNum).map((doc: any) => {
+                fileNames = response.json.ranker.documents.slice(0, validNoteNum).map((doc: any) => {
                     const FilesPath = doc.meta.name;
-                    let relativePath = FilesPath.replace(absPath, "");
+                    let relativePath = FilesPath.replace(this.settings.vaultPath, "");
                     return relativePath.replace(".md", "");
                 });
                 
@@ -171,7 +188,13 @@ export default class RandomRetrievalPlugin extends Plugin {
 
     
     async runUvicorn() {
-        const command = `osascript -e 'tell application "Terminal"
+        // Only supported on macOS
+        if (os.platform() !== 'darwin') {
+            new Notice('This feature is only supported on macOS.');
+            return;
+        }
+
+        const command = `osascript -e 'tell application "Terminal"  
         activate
         do script "cd ${this.settings.PATH_TO_APP} && conda activate ${this.settings.setCondaEnv} && uvicorn rr_app:rr_app --reload"
         end tell'`;
@@ -187,12 +210,9 @@ export default class RandomRetrievalPlugin extends Plugin {
                 return;
             }
 
-            new Notice(`stdout: ${stdout}`);
         });
 
     }
     
 }
 
-
-		

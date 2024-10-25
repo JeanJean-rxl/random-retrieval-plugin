@@ -1,6 +1,6 @@
 # Obsidian Random Retrieval Plugin
 
-**Note**: in the very early stage, NOT STABLE !!
+**Note**: This feature is only supported on macOS so far.
 
 This plugin was developped to open a random note based on local LLMs with Obsidian.
 - Random for Random Note in Obsidian
@@ -36,11 +36,16 @@ feel free to replace rr_app.py with your models
 
 
 ## Future Plan
+- support more platform, such as: Windows, mobile device
 - multi-language support
 - speed up
 
 
 ## Version History
+
+#### 1.0.7
+- complete the changes and minor changes requested
+
 
 #### 1.0.6
 - support language added: Chinese
@@ -58,4 +63,3 @@ feel free to replace rr_app.py with your models
 
 #### 1.0.0
 - basic version: only support English for now.
-
